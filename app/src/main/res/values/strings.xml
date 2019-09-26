@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">ChatApp</string>
+    <string name="text_warning_empty_email">Email not empty</string>
+    <string name="text_warning_empty_password">Pass not empty</string>
+    <string name="hint_user_name">User Name</string>
+    <string name="hint_password">Password</string>
+    <string name="text_login">LogIn</string>
+    <string name="text_signIn">SignIn</string>
+    <string name="text_login_failed">Login Error</string>
+    <string name="title_account">Account</string>
+    <string name="title_messenger">Messenger</string>
+    <string name="logout">Logout</string>
 </resources>

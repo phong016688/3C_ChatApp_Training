@@ -4,8 +4,10 @@ import com.ccc.chatapp.screens.BasePresenter
 
 interface LoginView {
     fun onLoginSuccess()
+    fun onLoginFailed()
 }
 
 interface LoginPresenter: BasePresenter {
     fun login(username: String, password: String)
+    fun signIn()
 }

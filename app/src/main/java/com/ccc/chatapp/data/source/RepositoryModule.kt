@@ -9,7 +9,6 @@ import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
-
     @Provides
     @Singleton
     fun provideUserRepository(sharedPrefsApi: SharedPrefsApi): UserRepository {
