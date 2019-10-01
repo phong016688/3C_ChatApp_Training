@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "495051754320",
+    "firebase_url": "https://appchat-acf0a.firebaseio.com",
+    "project_id": "appchat-acf0a",
+    "storage_bucket": "appchat-acf0a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:495051754320:android:ba288420892cbe64e27a55",
+        "android_client_info": {
+          "package_name": "com.ccc.chatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "495051754320-slud3osh9c3sdtbbomi583uapp46s1v6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBflZPWGTq5tpNgZeuaNrOS7aE_RYb88I8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "495051754320-slud3osh9c3sdtbbomi583uapp46s1v6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

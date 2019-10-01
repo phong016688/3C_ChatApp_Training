@@ -9,4 +9,8 @@ object Constant {
     object Extra {
         const val USER_ID = "user_id"
     }
+    object KeySaveInstance{
+        const val USERNAME = "username"
+        const val PASSWORD = "password"
+    }
 }
