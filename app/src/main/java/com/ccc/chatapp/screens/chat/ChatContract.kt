@@ -2,11 +2,10 @@ package com.ccc.chatapp.screens.chat
 
 import com.ccc.chatapp.screens.BasePresenter
 
-interface ChatView{
-    fun logoutSuccess()
+interface ChatView {
     fun logout()
 }
 
-interface ChatPresenter : BasePresenter{
+interface ChatPresenter : BasePresenter {
     fun logout()
 }

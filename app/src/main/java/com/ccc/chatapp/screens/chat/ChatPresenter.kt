@@ -2,7 +2,6 @@ package com.ccc.chatapp.screens.chat
 
 import com.ccc.chatapp.repositories.UserRepository
 import com.ccc.chatapp.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
 
 class ChatPresenterIplm(
     private var view: ChatView?,

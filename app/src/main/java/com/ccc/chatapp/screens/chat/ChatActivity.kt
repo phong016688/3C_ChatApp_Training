@@ -23,9 +23,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
     internal lateinit var mUserRepository: UserRepository
 
     private lateinit var mChatPresenter: ChatPresenter
-
     private lateinit var mChatNavigator: ChatNavigator
-
     private lateinit var mFragmentList: ArrayList<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,14 +46,14 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        when(item?.itemId){
-            R.id.item_logout -> onLogoutClick()
+        if (item?.itemId == R.id.item_logout) {
+            onLogoutClick()
         }
         return true
     }
 
     override fun logout() {
-        mChatNavigator.finishActivity()
+        mChatNavigator.goToLoginScreen()
     }
 
     override fun onStart() {
@@ -71,10 +69,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
     override fun onDestroy() {
         mChatPresenter.onDestroy()
         super.onDestroy()
-    }
-
-    override fun logoutSuccess() {
-        mChatNavigator.finishActivity()
     }
 
     private fun setSupportActionBar() {
