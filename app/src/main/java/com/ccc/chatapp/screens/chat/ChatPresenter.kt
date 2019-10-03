@@ -2,8 +2,9 @@ package com.ccc.chatapp.screens.chat
 
 import com.ccc.chatapp.repositories.UserRepository
 import com.ccc.chatapp.utils.rx.SchedulerProvider
+import io.reactivex.disposables.CompositeDisposable
 
-class ChatPresenterIplm(
+class ChatPresenterImpl(
     private var view: ChatView?,
     private val schedulerProvider: SchedulerProvider,
     private val userRepository: UserRepository
@@ -16,6 +17,7 @@ class ChatPresenterIplm(
     }
 
     override fun onDestroy() {
+        view = null
     }
 
     override fun logout() {

@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.ccc.chatapp.Application
 import com.ccc.chatapp.R
 import com.ccc.chatapp.repositories.UserRepository
+import com.ccc.chatapp.screens.chat.friendfragment.ListFriendFragment
 import com.ccc.chatapp.utils.rx.SchedulerProvider
 import kotlinx.android.synthetic.main.activity_chat.*
 import javax.inject.Inject
@@ -31,14 +32,13 @@ class ChatActivity : AppCompatActivity(), ChatView {
         setContentView(R.layout.activity_chat)
         (applicationContext as Application).getAppComponent().inject(this)
 
-        mChatPresenter = ChatPresenterIplm(this, mSchedulerProvider, mUserRepository)
+        mChatPresenter = ChatPresenterImpl(this, mSchedulerProvider, mUserRepository)
         mChatNavigator = ChatNavigatorImpl(this)
 
         setSupportActionBar()
         setViewPagerAdapter()
         handleEvent()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.logout_menu, menu)
@@ -87,7 +87,7 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     private fun setViewPagerAdapter() {
         mFragmentList = ArrayList()
-        mFragmentList.add(Fragment())
+        mFragmentList.add(ListFriendFragment.getInstance())
         fragment_ViewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager, 2) {
             override fun getItem(position: Int): Fragment {
                 return mFragmentList[position]
@@ -98,7 +98,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
             }
         }
         fragment_ViewPager.currentItem = 0
-
     }
 
     companion object {

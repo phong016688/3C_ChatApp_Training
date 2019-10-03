@@ -21,7 +21,7 @@ object Constant {
     }
 
     object KeySaveInstance {
-        const val USERNAME = "username"
+        const val USERNAME = "userName"
         const val PASSWORD = "password"
     }
 }

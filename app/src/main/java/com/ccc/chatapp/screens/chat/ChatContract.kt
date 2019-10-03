@@ -1,5 +1,6 @@
 package com.ccc.chatapp.screens.chat
 
+import com.ccc.chatapp.data.model.User
 import com.ccc.chatapp.screens.BasePresenter
 
 interface ChatView {
