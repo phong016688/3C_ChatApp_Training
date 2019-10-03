@@ -1,6 +1,5 @@
 package com.ccc.chatapp.repositories
 
-import android.net.Uri
 import com.ccc.chatapp.data.model.User
 import com.ccc.chatapp.data.source.local.sharedprf.SharedPrefsApi
 import com.google.firebase.auth.FirebaseAuth
