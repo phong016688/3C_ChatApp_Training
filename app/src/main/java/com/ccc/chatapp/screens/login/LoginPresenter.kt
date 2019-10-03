@@ -1,5 +1,6 @@
 package com.ccc.chatapp.screens.login
 
+import android.util.Log
 import com.ccc.chatapp.repositories.UserRepository
 import com.ccc.chatapp.utils.rx.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
@@ -28,6 +29,7 @@ class LoginPresenterImpl(
     }
 
     override fun signIn() {
+        view?.onSignIn()
     }
 
     override fun login(username: String, password: String) {
@@ -39,6 +41,7 @@ class LoginPresenterImpl(
                 view?.onLoginSuccess()
             }, {
                 view?.onLoginFailed()
+                Log.e(this::class.java.simpleName, it.message)
             })
         mCompositeDisposable.add(disposable)
     }

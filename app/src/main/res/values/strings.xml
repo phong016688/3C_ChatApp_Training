@@ -10,4 +10,9 @@
     <string name="title_account">Account</string>
     <string name="title_messenger">Messenger</string>
     <string name="logout">Logout</string>
+    <string name="hint_full_name">full name</string>
+    <string name="hint_phone_number">phone number</string>
+    <string name="text_warning_empty_fullName">full name not empty</string>
+    <string name="text_warning_empty_phone">phone not empty</string>
+    <string name="text_signIn_failed">SignIn Error</string>
 </resources>

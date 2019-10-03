@@ -34,6 +34,10 @@ class LoginActivity : AppCompatActivity(), LoginView {
         handleEvents()
     }
 
+    override fun onSignIn() {
+        mNavigator.goToSignInScreen()
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(Constant.KeySaveInstance.USERNAME, emailEditText.text.toString())
@@ -97,8 +101,13 @@ class LoginActivity : AppCompatActivity(), LoginView {
     }
 
     companion object {
-        fun getInstance(context: Context): Intent {
-            return Intent(context, LoginActivity::class.java)
+        fun getInstance(context: Context, addFlag: Boolean): Intent {
+            return Intent(context, LoginActivity::class.java).apply {
+                if (addFlag) {
+                    this.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                }
+            }
         }
     }
 }
