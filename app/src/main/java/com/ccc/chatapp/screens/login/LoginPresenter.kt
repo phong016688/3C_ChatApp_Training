@@ -16,7 +16,16 @@ class LoginPresenterImpl(
 
     override fun onStart() {
         if (userRepository.isUserLogged()) {
-            view?.onLoginSuccess()
+            val disposable = userRepository
+                .setUser()
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.ui())
+                .subscribe({
+                    view?.onLoginSuccess()
+                }, {
+                    Log.d(this::class.java.simpleName, it.message)
+                })
+            mCompositeDisposable.add(disposable)
         }
     }
 

@@ -15,4 +15,7 @@
     <string name="text_warning_empty_fullName">full name not empty</string>
     <string name="text_warning_empty_phone">phone not empty</string>
     <string name="text_signIn_failed">SignIn Error</string>
+    <string name="user_name">user name</string>
+    <string name="title_friend">Friend</string>
+    <string name="title_mess">Message</string>
 </resources>

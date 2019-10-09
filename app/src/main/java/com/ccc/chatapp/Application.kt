@@ -13,7 +13,6 @@ class Application : Application() {
     }
 
     fun getAppComponent(): AppComponent = mAppComponent
-
     private fun initAppComponent() {
         mAppComponent = DaggerAppComponent.builder()
             .applicationModule(ApplicationModule(this))

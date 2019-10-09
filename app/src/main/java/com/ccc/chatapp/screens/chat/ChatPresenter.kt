@@ -3,11 +3,19 @@ package com.ccc.chatapp.screens.chat
 import com.ccc.chatapp.repositories.UserRepository
 import com.ccc.chatapp.utils.rx.SchedulerProvider
 
-class ChatPresenterIplm(
+class ChatPresenterImpl(
     private var view: ChatView?,
     private val schedulerProvider: SchedulerProvider,
     private val userRepository: UserRepository
 ) : ChatPresenter {
+
+    override fun toFragmentFriend() {
+        view?.moveFragment(ChatActivity.Fragment_Friend)
+    }
+
+    override fun toFragmentMessage() {
+        view?.moveFragment(ChatActivity.Fragment_Message)
+    }
 
     override fun onStart() {
     }
@@ -16,6 +24,7 @@ class ChatPresenterIplm(
     }
 
     override fun onDestroy() {
+        view = null
     }
 
     override fun logout() {

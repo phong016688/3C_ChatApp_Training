@@ -3,7 +3,7 @@
 
     <group>
         <item
-            android:id="@+id/navigation_account"
+            android:id="@+id/navigation_friend"
             android:icon="@drawable/ic_supervisor_account_black_24dp"
             android:title="@string/title_account" />
     </group>

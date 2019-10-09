@@ -5,12 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.AdapterView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.ccc.chatapp.Application
 import com.ccc.chatapp.R
 import com.ccc.chatapp.repositories.UserRepository
+import com.ccc.chatapp.screens.chat.chatfragment.ChatFragment
+import com.ccc.chatapp.screens.chat.friendfragment.ListFriendFragment
 import com.ccc.chatapp.utils.rx.SchedulerProvider
 import kotlinx.android.synthetic.main.activity_chat.*
 import javax.inject.Inject
@@ -31,14 +34,13 @@ class ChatActivity : AppCompatActivity(), ChatView {
         setContentView(R.layout.activity_chat)
         (applicationContext as Application).getAppComponent().inject(this)
 
-        mChatPresenter = ChatPresenterIplm(this, mSchedulerProvider, mUserRepository)
+        mChatPresenter = ChatPresenterImpl(this, mSchedulerProvider, mUserRepository)
         mChatNavigator = ChatNavigatorImpl(this)
 
         setSupportActionBar()
         setViewPagerAdapter()
         handleEvent()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.logout_menu, menu)
@@ -71,6 +73,10 @@ class ChatActivity : AppCompatActivity(), ChatView {
         super.onDestroy()
     }
 
+    override fun moveFragment(position: Int) {
+        fragment_ViewPager.currentItem = position
+    }
+
     private fun setSupportActionBar() {
         setSupportActionBar(toolBar)
         supportActionBar?.title = getString(R.string.app_name)
@@ -79,6 +85,21 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun handleEvent() {
+        navigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navigation_friend -> {
+                    toolBar.title = getString(R.string.title_friend)
+                    mChatPresenter.toFragmentFriend()
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navigation_messenger -> {
+                    toolBar.title = getString(R.string.title_mess)
+                    mChatPresenter.toFragmentMessage()
+                    return@setOnNavigationItemSelectedListener  true
+                }
+            }
+            return@setOnNavigationItemSelectedListener false
+        }
     }
 
     private fun onLogoutClick() {
@@ -87,7 +108,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     private fun setViewPagerAdapter() {
         mFragmentList = ArrayList()
-        mFragmentList.add(Fragment())
+        mFragmentList.add(ListFriendFragment.getInstance())
+        mFragmentList.add(ChatFragment.getInstance())
         fragment_ViewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager, 2) {
             override fun getItem(position: Int): Fragment {
                 return mFragmentList[position]
@@ -97,11 +119,12 @@ class ChatActivity : AppCompatActivity(), ChatView {
                 return mFragmentList.size
             }
         }
-        fragment_ViewPager.currentItem = 0
-
+        fragment_ViewPager.currentItem = Fragment_Friend
     }
 
     companion object {
+        const val Fragment_Friend = 0
+        const val Fragment_Message = 1
         fun getInstance(context: Context): Intent {
             return Intent(context, ChatActivity::class.java)
         }
