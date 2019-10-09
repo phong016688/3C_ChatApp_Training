@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".screens.signin.SignInActivity">
+
+    <ImageView
+        android:id="@+id/avatarSignInImageView"
+        android:layout_width="@dimen/with_image_100dp"
+        android:layout_height="@dimen/height_image_100dp"
+        android:layout_marginTop="@dimen/margin_20dp"
+        android:src="@drawable/default_avatar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/userSignInEditText"
+        android:layout_width="@dimen/with_layout_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_40dp"
+        android:layout_marginVertical="@dimen/margin_10dp"
+        android:hint="@string/hint_user_name"
+        android:textSize="@dimen/text_size_16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/avatarSignInImageView" />
+
+    <EditText
+        android:id="@+id/fullNameSignInEditText"
+        android:layout_width="@dimen/with_layout_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_40dp"
+        android:layout_marginVertical="@dimen/margin_10dp"
+        android:hint="@string/hint_full_name"
+        android:textSize="@dimen/text_size_16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userSignInEditText" />
+
+    <EditText
+        android:id="@+id/passwordSignInEditText"
+        android:layout_width="@dimen/with_layout_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_40dp"
+        android:layout_marginVertical="@dimen/margin_10dp"
+        android:hint="@string/hint_password"
+        android:inputType="textPassword"
+        android:textSize="@dimen/text_size_16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fullNameSignInEditText" />
+
+    <EditText
+        android:id="@+id/phoneSignInEditText"
+        android:layout_width="@dimen/with_layout_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_40dp"
+        android:layout_marginVertical="@dimen/margin_10dp"
+        android:hint="@string/hint_phone_number"
+        android:inputType="phone"
+        android:textSize="@dimen/text_size_16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordSignInEditText" />
+
+    <Button
+        android:id="@+id/signInAccountButton"
+        android:layout_width="@dimen/with_layout_0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/margin_40dp"
+        android:layout_marginVertical="@dimen/margin_20dp"
+        android:background="@drawable/bg_gradient_button"
+        android:text="@string/text_signIn"
+        android:textAllCaps="false"
+        android:textSize="@dimen/text_size_16sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneSignInEditText" />
+    <ProgressBar
+        android:id="@+id/signInProgress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_40dp"
+        android:outlineSpotShadowColor="@color/colorLineProgressBar"
+        app:layout_constraintTop_toBottomOf="@id/signInAccountButton"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        style="?android:attr/progressBarStyleHorizontal"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="text_size_16sp">16sp</dimen>
+    <dimen name="text_size_24sp">24sp</dimen>
+    <dimen name="margin_10dp">10dp</dimen>
+    <dimen name="margin_20dp">20dp</dimen>
+    <dimen name="margin_40dp">40dp</dimen>
+    <dimen name="with_image_100dp">100dp</dimen>
+    <dimen name="height_image_100dp">100dp</dimen>
+    <dimen name="with_image_50dp">50dp</dimen>
+    <dimen name="height_image_50dp">50dp</dimen>
+    <dimen name="margin_activity_horizontal">16dp</dimen>
+    <dimen name="margin_activity_vertical">16dp</dimen>
+    <dimen name="with_layout_0dp">0dp</dimen>
+    <dimen name="height_layout_0dp">0dp</dimen>
+    <dimen name="radius_image">25dp</dimen>
+</resources>
