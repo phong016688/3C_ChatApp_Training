@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.ccc.chatapp.R
 import com.ccc.chatapp.data.model.Message
+import com.ccc.chatapp.extension.toStringDate
 import kotlinx.android.synthetic.main.item_message.view.*
 
 class AdapterMessage(context: Context?, list: ArrayList<Message>) :
@@ -28,23 +29,28 @@ class AdapterMessage(context: Context?, list: ArrayList<Message>) :
     }
 
     fun addMessage(message: Message) {
-        mListMessage.add(0, message)
-        notifyItemInserted(0)
+        mListMessage.add(message)
+        this.notifyItemInserted(mListMessage.size)
+    }
+
+    fun clear() {
+        mListMessage.clear()
+        this.notifyDataSetChanged()
     }
 
     inner class MessageHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private var mTimeTextView = itemView.timeTextView
         private var mMessageTextView = itemView.messageTextView
         fun onBind(position: Int) {
-            if (mListMessage[position].isSend) {
+            if (mListMessage[position].isMySend) {
                 mMessageTextView.gravity = Gravity.RIGHT
                 mTimeTextView.gravity = Gravity.RIGHT
             } else {
                 mMessageTextView.gravity = Gravity.LEFT
                 mTimeTextView.gravity = Gravity.LEFT
             }
-            mMessageTextView.text = mListMessage[position].message
-            mTimeTextView.text = mListMessage[position].time.toDate().toString()
+            mTimeTextView.text = mListMessage[position].timeSend.toLong().toStringDate()
+            mMessageTextView.text = mListMessage[position].text
         }
     }
 }

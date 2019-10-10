@@ -12,4 +12,5 @@ interface ListFriendFragmentView {
 interface ListFriendFragmentPresenter : BasePresenter {
     fun getListFriend()
     fun goToChatFragment(user: User)
+    fun addFriend(userName: String)
 }

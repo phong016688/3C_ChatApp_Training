@@ -4,8 +4,11 @@ import com.ccc.chatapp.data.model.Message
 import com.ccc.chatapp.data.model.User
 import com.ccc.chatapp.data.source.local.sharedprf.SharedPrefsApi
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.FieldValue
 import io.reactivex.Observable
 import io.reactivex.Single
 
@@ -17,8 +20,11 @@ interface UserRepository {
     fun isUserLogged(): Boolean
     fun getListFriend(): Observable<User>
     fun setUser(): Single<Any>
-    fun getListMessage(): Observable<Message>
     fun setToUser(user: User)
+    fun listenerListMessage(): Observable<Message>
+    fun sendMessage(message: Message): Single<Any>
+    fun removeListener()
+    fun addFriend(username: String): Single<Any>
 }
 
 class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
@@ -27,6 +33,7 @@ class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
     private var mFirestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private var mUser: User? = null
     private var mToUser: User? = null
+    private var mRegistrationListener: ListenerRegistration? = null
 
     override fun getListFriend(): Observable<User> = Observable.create<User> { emiter ->
         mFirestore.collection("user")
@@ -36,6 +43,7 @@ class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
                     mUser?.listFriendId?.forEach {
                         if (document.id.trim() == it.trim()) {
                             document.toObject(User::class.java)?.let { user ->
+                                user.id = document.id.trim()
                                 emiter.onNext(user)
                             }
                         }
@@ -57,6 +65,7 @@ class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
                         .document(currentUser.uid)
                     dbRef.get().addOnSuccessListener { snapshot ->
                         mUser = snapshot.toObject(User::class.java)
+                        mUser?.id = currentUser.uid
                         emitter.onSuccess(Unit)
                     }
                 }
@@ -75,6 +84,7 @@ class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
                         mFirestore.collection("user").document(currentUser.uid).set(user)
                             .addOnCompleteListener {
                                 if (it.isSuccessful) {
+                                    mUser?.id = currentUser.uid
                                     emitter.onSuccess(Unit)
                                 }
                             }
@@ -103,6 +113,7 @@ class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
             .get()
             .addOnSuccessListener {
                 mUser = it.toObject(User::class.java)
+                mUser?.id = currenUser.uid
                 emiter.onSuccess(Unit)
             }
             .addOnFailureListener {
@@ -116,7 +127,103 @@ class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
         mToUser = user
     }
 
-    override fun getListMessage(): Observable<Message> {
-        return Observable.just(Message()) // chua lam
+    override fun listenerListMessage(): Observable<Message> =
+        Observable.create<Message> { emitter ->
+            mRegistrationListener = mFirestore.collection("user")
+                .document("${mUser?.id?.trim()}")
+                .collection("message")
+                .document("${mToUser?.id?.trim()}")
+                .collection("mess")
+                .orderBy("timeSend", Query.Direction.ASCENDING)
+                .addSnapshotListener { querySnapshot, exception ->
+                    if (exception != null) {
+                        emitter.tryOnError(exception)
+                        return@addSnapshotListener
+                    } else {
+                        querySnapshot?.documentChanges?.forEach { documentChanges ->
+                            if (documentChanges.type == DocumentChange.Type.ADDED) {
+                                emitter.onNext(documentChanges.document.toObject(Message::class.java))
+                            }
+                        }
+                    }
+                }
+        }
+
+    override fun sendMessage(message: Message): Single<Any> = Single.create<Any> { emiter ->
+        mFirestore.collection("user")
+            .document("${mUser?.id?.trim()}")
+            .collection("message")
+            .document("${mToUser?.id?.trim()}")
+            .collection("mess")
+            .add(message)
+            .addOnFailureListener {
+                emiter.tryOnError(it)
+            }
+            .addOnSuccessListener {
+                emiter.onSuccess(Unit)
+            }
+    }.flatMap {
+        message.isMySend = false
+        Single.create<Any> { emiter ->
+            mFirestore.collection("user")
+                .document("${mToUser?.id?.trim()}")
+                .collection("message")
+                .document("${mUser?.id?.trim()}")
+                .collection("mess")
+                .add(message)
+                .addOnFailureListener {
+                    emiter.tryOnError(it)
+                }
+                .addOnSuccessListener {
+                    emiter.onSuccess(Unit)
+                }
+        }
     }
+
+    override fun removeListener() {
+        mRegistrationListener?.remove()
+    }
+
+    override fun addFriend(username: String): Single<Any> = Single.create<String> { emiter ->
+        mFirestore.collection("user")
+            .whereEqualTo("userName", username)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                querySnapshot.documents.forEach { document ->
+                    if (mUser?.listFriendId?.contains(document.id.trim()) == false && document.id != mUser?.id) {
+                        mUser?.listFriendId?.add(document.id)
+                        emiter.onSuccess(document.id)
+                    }
+                }
+            }
+            .addOnFailureListener {
+                emiter.tryOnError(it)
+            }
+    }
+        .flatMap { idFriend ->
+            Single.create<String> { emiter ->
+                mFirestore.collection("user")
+                    .document("${mUser?.id?.trim()}")
+                    .update("listFriendId", FieldValue.arrayUnion(idFriend))
+                    .addOnSuccessListener {
+                        emiter.onSuccess(idFriend)
+                    }
+                    .addOnFailureListener {
+                        emiter.tryOnError(it)
+                    }
+            }
+        }
+        .flatMap { idFriend ->
+            Single.create<Any> { emiter ->
+                mFirestore.collection("user")
+                    .document(idFriend)
+                    .update("listFriendId", FieldValue.arrayUnion(mUser?.id))
+                    .addOnSuccessListener {
+                        emiter.onSuccess(Unit)
+                    }
+                    .addOnFailureListener {
+                        emiter.tryOnError(it)
+                    }
+            }
+        }
 }

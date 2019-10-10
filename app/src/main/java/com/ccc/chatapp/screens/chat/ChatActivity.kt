@@ -3,6 +3,7 @@ package com.ccc.chatapp.screens.chat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -10,10 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.ccc.chatapp.Application
 import com.ccc.chatapp.R
+import com.ccc.chatapp.data.model.Message
 import com.ccc.chatapp.repositories.UserRepository
 import com.ccc.chatapp.screens.chat.chatfragment.ChatFragment
 import com.ccc.chatapp.screens.chat.friendfragment.ListFriendFragment
 import com.ccc.chatapp.utils.rx.SchedulerProvider
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.android.synthetic.main.activity_chat.*
 import javax.inject.Inject
 
@@ -105,7 +108,8 @@ class ChatActivity : AppCompatActivity(), ChatView {
         mFragmentList = ArrayList()
         mFragmentList.add(ListFriendFragment.getInstance())
         mFragmentList.add(ChatFragment.getInstance())
-        fragment_ViewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager, 2) {
+        fragment_ViewPager.adapter =
+            object : FragmentStatePagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment = mFragmentList[position]
 
             override fun getCount(): Int = mFragmentList.size

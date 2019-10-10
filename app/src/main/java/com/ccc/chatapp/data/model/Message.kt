@@ -1,5 +1,9 @@
 package com.ccc.chatapp.data.model
 
-import com.google.firebase.Timestamp
+import com.google.firebase.firestore.PropertyName
 
-data class Message(var message: String = "", var time: Timestamp = Timestamp.now(), var isSend: Boolean = true)
+data class Message(
+    @PropertyName("text") var text: String = "",
+    @PropertyName("timeSend") var timeSend: String = "",
+    @PropertyName("isMySend") var isMySend: Boolean = false
+)

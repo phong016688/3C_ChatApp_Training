@@ -21,7 +21,7 @@ class ListFriendFragmentPresenterImpl(
             .subscribe({
                 view?.updateListFriend(it)
             }, {
-                Log.d(this::class.java.simpleName, it.message)
+                Log.e(this::class.java.simpleName, it.message)
             })
         mCompositeDisposable.add(disposable)
     }
@@ -31,7 +31,7 @@ class ListFriendFragmentPresenterImpl(
     }
 
     override fun onStop() {
-        //no-op
+        // No-op
     }
 
     override fun onDestroy() {
@@ -42,5 +42,17 @@ class ListFriendFragmentPresenterImpl(
     override fun goToChatFragment(user: User) {
         userRepository.setToUser(user)
         view?.goToChatFragment()
+    }
+
+    override fun addFriend(userName: String) {
+        val disposable = userRepository.addFriend(userName)
+            .subscribeOn(schedulerProvider.io())
+            .observeOn(schedulerProvider.ui())
+            .subscribe({
+                view?.getListFriend()
+            }, {
+                Log.e(this.javaClass.simpleName, it.message)
+            })
+        mCompositeDisposable.add(disposable)
     }
 }

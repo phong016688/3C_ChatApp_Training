@@ -25,9 +25,9 @@ class ChatFragment : Fragment(), ChatFragmentView {
     private lateinit var mPresenter: ChatFragmentPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         (activity?.application as Application).getAppComponent().inject(this)
         mPresenter = ChatFragmentPresenterImpl(this, mSchedulerProvider, mUserRepository)
-        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateView(
@@ -37,26 +37,56 @@ class ChatFragment : Fragment(), ChatFragmentView {
     ): View? {
         val view: View = inflater.inflate(R.layout.fragment_messenger, container, false)
         setUpRecyclerView(view)
+        handleEvent(view)
         return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mPresenter.onResume()
+    }
+
+    override fun onPause() {
+        mPresenter.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroyView() {
+        mPresenter.onDestroy()
+        super.onDestroyView()
+    }
+
+    override fun clearListMessage() {
+        mAdapter.clear()
     }
 
     override fun updateListMessage(message: Message) {
         mAdapter.addMessage(message)
     }
 
-    private fun setUpRecyclerView(view: View) {
-        mAdapter = AdapterMessage(context, ArrayList())
-        view.messengerRecyclerView.layoutManager = LinearLayoutManager(context).apply {
-            reverseLayout = true
-            stackFromEnd = true
-        }
-        view.messengerRecyclerView.setHasFixedSize(true)
-        view.messengerRecyclerView.itemAnimator = DefaultItemAnimator()
-        view.messengerRecyclerView.adapter = mAdapter
+    override fun listenerListMessage() {
+        mPresenter.listenerListMessage()
     }
 
-    override fun getListMessage() {
-        mPresenter.getListMessage()
+    private fun handleEvent(view: View) {
+        view.sendImageView.setOnClickListener {
+            mPresenter.sendMessage(Message().apply {
+                text = view.messengerEditText.text.toString()
+                isMySend = true
+                timeSend = System.currentTimeMillis().toString()
+            })
+        }
+    }
+
+    private fun setUpRecyclerView(view: View) {
+        val messages = ArrayList<Message>()
+        mAdapter = AdapterMessage(context, messages)
+        view.messengerRecyclerView.apply {
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            itemAnimator = DefaultItemAnimator()
+            adapter = mAdapter
+        }
     }
 
     companion object {

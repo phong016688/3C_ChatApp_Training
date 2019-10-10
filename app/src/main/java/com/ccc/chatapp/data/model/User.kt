@@ -7,5 +7,6 @@ data class User(
     @PropertyName("fullName") var fullName: String = "",
     @PropertyName("phone") var phone: String = "",
     @PropertyName("avatar") var avatar: String = "",
-    @PropertyName("listFriendId") var listFriendId: ArrayList<String>? = null
+    @PropertyName("listFriendId") var listFriendId: ArrayList<String>? = null,
+    var id: String = ""
 )

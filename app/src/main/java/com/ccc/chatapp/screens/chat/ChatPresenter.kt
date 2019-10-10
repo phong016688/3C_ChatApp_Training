@@ -10,12 +10,15 @@ class ChatPresenterIplm(
 ) : ChatPresenter {
 
     override fun onStart() {
+        // No-op
     }
 
     override fun onStop() {
+        // No-op
     }
 
     override fun onDestroy() {
+        // No-op
     }
 
     override fun logout() {

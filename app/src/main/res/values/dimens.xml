@@ -14,5 +14,6 @@
     <dimen name="with_layout_0dp">0dp</dimen>
     <dimen name="height_layout_0dp">0dp</dimen>
     <dimen name="radius_image">25dp</dimen>
-    <dimen name="max_height_message">200dp</dimen>
+    <dimen name="max_with_message">200dp</dimen>
+    <dimen name="text_size_8sp">8sp</dimen>
 </resources>

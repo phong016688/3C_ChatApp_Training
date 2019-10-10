@@ -14,6 +14,7 @@ import com.ccc.chatapp.repositories.UserRepository
 import com.ccc.chatapp.screens.chat.ChatActivity
 import com.ccc.chatapp.screens.chat.ItemClickListener
 import com.ccc.chatapp.utils.rx.SchedulerProvider
+import kotlinx.android.synthetic.main.fragment_friend.*
 import kotlinx.android.synthetic.main.fragment_friend.view.*
 import javax.inject.Inject
 
@@ -38,12 +39,24 @@ class ListFriendFragment : Fragment(), ListFriendFragmentView,
         )
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view: View = inflater.inflate(R.layout.fragment_friend, container, false)
+        setUpRecyclerView(view)
+        handleEvent(view)
+        return view
+    }
+
     override fun onStart() {
         super.onStart()
         mPresenter.onStart()
     }
 
     override fun getListFriend() {
+        mAdapter?.clear()
         mPresenter.getListFriend()
     }
 
@@ -55,26 +68,24 @@ class ListFriendFragment : Fragment(), ListFriendFragmentView,
         mPresenter.goToChatFragment(user)
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view: View = inflater.inflate(R.layout.fragment_friend, container, false)
-        setUpRecyclerView(view)
-        return view
-    }
-
     override fun goToChatFragment() {
         (activity as ChatActivity).moveFragment(ChatActivity.FRAGMENT_MESSAGE)
     }
 
+    private fun handleEvent(view: View) {
+        view.addFriendImageView.setOnClickListener {
+            mPresenter.addFriend(searchUserEditText.text.toString())
+        }
+    }
+
     private fun setUpRecyclerView(view: View) {
         mAdapter = AdapterFriendList(context, ArrayList())
-        view.friendRecyclerView.adapter = mAdapter
-        view.friendRecyclerView.layoutManager = LinearLayoutManager(context)
-        view.friendRecyclerView.setHasFixedSize(true)
-        view.friendRecyclerView.itemAnimator = DefaultItemAnimator()
+        view.friendRecyclerView.apply {
+            adapter = mAdapter
+            layoutManager = LinearLayoutManager(context)
+            setHasFixedSize(true)
+            itemAnimator = DefaultItemAnimator()
+        }
         mAdapter?.setItemClickListener(this)
     }
 

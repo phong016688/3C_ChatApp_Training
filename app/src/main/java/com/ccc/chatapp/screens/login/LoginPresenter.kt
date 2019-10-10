@@ -29,7 +29,7 @@ class LoginPresenterImpl(
     }
 
     override fun onStop() {
-        //no-op
+        // No-op
     }
 
     override fun onDestroy() {

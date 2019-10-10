@@ -38,6 +38,11 @@ class AdapterFriendList(context: Context?, listFriend: ArrayList<User>) :
         this.notifyItemInserted(0)
     }
 
+    fun clear() {
+        mListFriend.clear()
+        this.notifyDataSetChanged()
+    }
+
     inner class FriendHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         View.OnClickListener {
         private var mItemAvatarImageView = itemView.itemAvatarImageView
