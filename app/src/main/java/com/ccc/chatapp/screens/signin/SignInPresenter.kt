@@ -17,9 +17,11 @@ class SignInPresenterImpl(
     private val mCompositeDisposable = CompositeDisposable()
 
     override fun onStart() {
+        // No-op
     }
 
     override fun onStop() {
+        // No-op
     }
 
     override fun onDestroy() {
@@ -28,24 +30,18 @@ class SignInPresenterImpl(
     }
 
     override fun signIn(user: User, password: String) {
-        val disposable = userRepository.signIn(user, password).subscribeOn(schedulerProvider.io())
+        val disposable = UploadUtils
+            .getUrlAvatar(Uri.parse(user.avatar))
+            .flatMap {
+                user.avatar = it
+                userRepository.signIn(user, password)
+            }
+            .subscribeOn(schedulerProvider.io())
             .observeOn(schedulerProvider.ui())
             .subscribe({
                 view?.onSignInSuccess()
             }, {
                 view?.onSIgnInFailed()
-                Log.e(this::class.java.simpleName, it.message)
-            })
-        mCompositeDisposable.add(disposable)
-    }
-
-    override fun getUrlAvatar(uri: Uri) {
-        val disposable = UploadUtils.getUrlAvatar(uri)
-            .subscribeOn(schedulerProvider.io())
-            .observeOn(schedulerProvider.ui())
-            .subscribe({
-                view?.updateAvatar(it)
-            }, {
                 Log.e(this::class.java.simpleName, it.message)
             })
         mCompositeDisposable.add(disposable)

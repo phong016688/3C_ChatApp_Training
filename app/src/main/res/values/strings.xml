@@ -7,7 +7,7 @@
     <string name="text_login">LogIn</string>
     <string name="text_signIn">SignIn</string>
     <string name="text_login_failed">Login Error</string>
-    <string name="title_account">Account</string>
+    <string name="title_friend">Friend</string>
     <string name="title_messenger">Messenger</string>
     <string name="logout">Logout</string>
     <string name="hint_full_name">full name</string>
@@ -15,4 +15,5 @@
     <string name="text_warning_empty_fullName">full name not empty</string>
     <string name="text_warning_empty_phone">phone not empty</string>
     <string name="text_signIn_failed">SignIn Error</string>
+    <string name="user_name">User Name</string>
 </resources>
