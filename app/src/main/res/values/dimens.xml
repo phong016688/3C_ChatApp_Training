@@ -13,4 +13,6 @@
     <dimen name="margin_activity_vertical">16dp</dimen>
     <dimen name="with_layout_0dp">0dp</dimen>
     <dimen name="height_layout_0dp">0dp</dimen>
+    <dimen name="radius_image">25dp</dimen>
+    <dimen name="max_height_message">200dp</dimen>
 </resources>

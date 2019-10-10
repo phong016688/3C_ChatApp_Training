@@ -1,9 +1,12 @@
 package com.ccc.chatapp.repositories
 
+import com.ccc.chatapp.data.model.Message
 import com.ccc.chatapp.data.model.User
 import com.ccc.chatapp.data.source.local.sharedprf.SharedPrefsApi
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import io.reactivex.Observable
 import io.reactivex.Single
 
 interface UserRepository {
@@ -12,47 +15,64 @@ interface UserRepository {
     fun getCurrentUser(): User?
     fun signIn(user: User, password: String): Single<Any>
     fun isUserLogged(): Boolean
+    fun getListFriend(): Observable<User>
+    fun setUser(): Single<Any>
+    fun getListMessage(): Observable<Message>
+    fun setToUser(user: User)
 }
 
 class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
+
     private var mAuth: FirebaseAuth = FirebaseAuth.getInstance()
     private var mFirestore: FirebaseFirestore = FirebaseFirestore.getInstance()
     private var mUser: User? = null
+    private var mToUser: User? = null
 
-    override fun isUserLogged(): Boolean {
-        return mAuth.currentUser != null
+    override fun getListFriend(): Observable<User> = Observable.create<User> { emiter ->
+        mFirestore.collection("user")
+            .get()
+            .addOnSuccessListener { snapshot ->
+                for (document in snapshot.documents) {
+                    mUser?.listFriendId?.forEach {
+                        if (document.id.trim() == it.trim()) {
+                            document.toObject(User::class.java)?.let { user ->
+                                emiter.onNext(user)
+                            }
+                        }
+                    }
+                }
+            }.addOnFailureListener {
+                emiter.tryOnError(it)
+            }
     }
 
-    override fun login(username: String, password: String): Single<Any> {
-        return Single.create { emitter ->
-            mAuth.signInWithEmailAndPassword(username, password)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        val currentUser = mAuth.currentUser ?: return@addOnCompleteListener
-                        val dbRef = mFirestore.collection("user")
-                            .document(currentUser.uid)
-                        dbRef.get().addOnSuccessListener { snapshot ->
-                            mUser = snapshot.toObject(User::class.java)
-                        }
+    override fun isUserLogged(): Boolean = mAuth.currentUser != null
+
+    override fun login(username: String, password: String): Single<Any> = Single.create { emitter ->
+        mAuth.signInWithEmailAndPassword(username, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val currentUser = mAuth.currentUser ?: return@addOnCompleteListener
+                    val dbRef = mFirestore.collection("user")
+                        .document(currentUser.uid)
+                    dbRef.get().addOnSuccessListener { snapshot ->
+                        mUser = snapshot.toObject(User::class.java)
                         emitter.onSuccess(Unit)
                     }
-                }.addOnFailureListener {
-                    emitter.tryOnError(it)
                 }
-        }
+            }.addOnFailureListener {
+                emitter.tryOnError(it)
+            }
     }
 
     override fun signIn(user: User, password: String): Single<Any> {
         mUser = user
         return Single.create { emitter ->
-            mAuth.createUserWithEmailAndPassword(user.username, password)
+            mAuth.createUserWithEmailAndPassword(user.userName, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val currentUser = mAuth.currentUser ?: return@addOnCompleteListener
-                        val itemUser = hashMapOf<Any, Any>(
-                            currentUser.uid to user
-                        )
-                        mFirestore.collection("user").add(itemUser)
+                        mFirestore.collection("user").document(currentUser.uid).set(user)
                             .addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     emitter.onSuccess(Unit)
@@ -76,7 +96,27 @@ class UserRepositoryImpl(sharedPrefsApi: SharedPrefsApi) : UserRepository {
         }
     }
 
-    override fun getCurrentUser(): User? {
-        return mUser
+    override fun setUser(): Single<Any> = Single.create { emiter ->
+        val currenUser = mAuth.currentUser ?: return@create
+        mFirestore.collection("user")
+            .document(currenUser.uid)
+            .get()
+            .addOnSuccessListener {
+                mUser = it.toObject(User::class.java)
+                emiter.onSuccess(Unit)
+            }
+            .addOnFailureListener {
+                emiter.tryOnError(it)
+            }
+    }
+
+    override fun getCurrentUser(): User? = mUser
+
+    override fun setToUser(user: User) {
+        mToUser = user
+    }
+
+    override fun getListMessage(): Observable<Message> {
+        return Observable.just(Message()) // chua lam
     }
 }

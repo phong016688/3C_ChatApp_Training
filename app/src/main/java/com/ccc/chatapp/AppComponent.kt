@@ -2,6 +2,8 @@ package com.ccc.chatapp
 
 import com.ccc.chatapp.data.source.RepositoryModule
 import com.ccc.chatapp.screens.chat.ChatActivity
+import com.ccc.chatapp.screens.chat.chatfragment.ChatFragment
+import com.ccc.chatapp.screens.chat.friendfragment.ListFriendFragment
 import com.ccc.chatapp.screens.login.LoginActivity
 import com.ccc.chatapp.screens.signin.SignInActivity
 import dagger.Component
@@ -16,4 +18,8 @@ interface AppComponent {
     fun inject(chatActivity: ChatActivity)
 
     fun inject(signInActivity: SignInActivity)
+
+    fun inject(listFriendFragment: ListFriendFragment)
+
+    fun inject(chatFragment: ChatFragment)
 }

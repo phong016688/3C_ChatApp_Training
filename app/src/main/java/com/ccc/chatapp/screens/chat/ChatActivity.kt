@@ -11,6 +11,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter
 import com.ccc.chatapp.Application
 import com.ccc.chatapp.R
 import com.ccc.chatapp.repositories.UserRepository
+import com.ccc.chatapp.screens.chat.chatfragment.ChatFragment
+import com.ccc.chatapp.screens.chat.friendfragment.ListFriendFragment
 import com.ccc.chatapp.utils.rx.SchedulerProvider
 import kotlinx.android.synthetic.main.activity_chat.*
 import javax.inject.Inject
@@ -38,7 +40,6 @@ class ChatActivity : AppCompatActivity(), ChatView {
         setViewPagerAdapter()
         handleEvent()
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.logout_menu, menu)
@@ -79,6 +80,21 @@ class ChatActivity : AppCompatActivity(), ChatView {
     }
 
     private fun handleEvent() {
+        navigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.navigation_friend -> {
+                    toolBar.title = it.title
+                    fragment_ViewPager.currentItem = FRAGMENT_FRIEND
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.navigation_messenger -> {
+                    toolBar.title = it.title
+                    fragment_ViewPager.currentItem = FRAGMENT_MESSAGE
+                    return@setOnNavigationItemSelectedListener true
+                }
+            }
+            return@setOnNavigationItemSelectedListener false
+        }
     }
 
     private fun onLogoutClick() {
@@ -87,23 +103,31 @@ class ChatActivity : AppCompatActivity(), ChatView {
 
     private fun setViewPagerAdapter() {
         mFragmentList = ArrayList()
-        mFragmentList.add(Fragment())
+        mFragmentList.add(ListFriendFragment.getInstance())
+        mFragmentList.add(ChatFragment.getInstance())
         fragment_ViewPager.adapter = object : FragmentStatePagerAdapter(supportFragmentManager, 2) {
-            override fun getItem(position: Int): Fragment {
-                return mFragmentList[position]
-            }
+            override fun getItem(position: Int): Fragment = mFragmentList[position]
 
-            override fun getCount(): Int {
-                return mFragmentList.size
+            override fun getCount(): Int = mFragmentList.size
+        }
+        fragment_ViewPager.currentItem = FRAGMENT_FRIEND
+    }
+
+    fun moveFragment(positionFrag: Int) {
+        fragment_ViewPager.currentItem = positionFrag
+        when (positionFrag) {
+            FRAGMENT_FRIEND -> {
+                navigationView.selectedItemId = R.id.navigation_friend
+            }
+            FRAGMENT_MESSAGE -> {
+                navigationView.selectedItemId = R.id.navigation_messenger
             }
         }
-        fragment_ViewPager.currentItem = 0
-
     }
 
     companion object {
-        fun getInstance(context: Context): Intent {
-            return Intent(context, ChatActivity::class.java)
-        }
+        const val FRAGMENT_FRIEND = 0
+        const val FRAGMENT_MESSAGE = 1
+        fun getInstance(context: Context): Intent = Intent(context, ChatActivity::class.java)
     }
 }
